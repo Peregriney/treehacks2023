@@ -11,7 +11,7 @@ class DetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Detail Screen'),
+        title: Text('Intrusion Details'),
       ),
       body: Center(
         child: Column(
