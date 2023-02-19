@@ -1,41 +1,72 @@
 import 'package:flutter/material.dart';
 import 'detail_screen.dart';
+import 'dart:convert';
+import 'dart:typed_data';
+import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
 
+
+MemoryImage base64Image(String base64String) {
+  Uint8List bytes = base64Decode(base64String);
+  return MemoryImage(bytes);
+}
+
 class _HomePageState extends State<HomePage> {
-  List<String> imageList = [
-    "https://via.placeholder.com/150",
-    "https://via.placeholder.com/150",
-    "https://via.placeholder.com/150",
-    "https://via.placeholder.com/150",
-    "https://via.placeholder.com/150",
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _updateImageList();
+  }
+
+  List<dynamic> imageList = [];
+
+    void _updateImageList() async {
+    String url = 'https://peregriney--yolo-detection-web-dev.modal.run/';
+
+
+    try {
+      http.Response response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        // Parse the JSON response
+        Map<String, dynamic> jsonData = json.decode(response.body);
+
+        // Update the imageList state with the new data
+        setState(() {
+          imageList = jsonData.values.toList();
+        });
+        print(imageList);
+      } else {
+        // Handle error
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      // Handle error
+      print('Request failed with error: $e.');
+    }
+  }
 
   List<String> dateList = [
-    "Feb 1, 2023 10:00 AM",
-    "Feb 2, 2023 11:00 AM",
-    "Feb 3, 2023 12:00 PM",
-    "Feb 4, 2023 1:00 PM",
-    "Feb 5, 2023 2:00 PM",
+    "Feb 2, 2023 10:23 AM",
+    "Feb 2, 2023 11:45 AM",
+    "Feb 2, 2023 12:12 PM",
   ];
 
   List<String> descriptionList = [
-    "Description 1",
-    "Description 2",
-    "Description 3",
-    "Description 4",
-    "Description 5",
+    "NE Barn - Goose",
+    "SW Pen - Duck",
+    "NW Pen - Duck",
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Flutter App'),
+        title: Text('Recent Notifications'),
       ),
       body: ListView.builder(
         itemCount: imageList.length,
@@ -83,8 +114,8 @@ class ListItem extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.network(
-            imageUrl,
+          Image.memory(
+            base64Decode(imageUrl),
             width: 150,
             height: 100,
           ),

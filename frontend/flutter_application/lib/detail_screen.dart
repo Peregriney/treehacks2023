@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
 
 class DetailScreen extends StatelessWidget {
   final String imageUrl;
@@ -17,8 +18,8 @@ class DetailScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.network(
-              imageUrl,
+            Image.memory(
+            base64Decode(imageUrl),
               height: 200,
             ),
             SizedBox(height: 20),
